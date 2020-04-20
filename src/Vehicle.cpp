@@ -1,13 +1,24 @@
 #include "../include/Vehicle.hpp"
+#include<ros/ros.h>
+#include<geometry_msgs/PolygonStamped.h>
 
 vector <State> Vehicle::nextStates(State* n)
 {
 	State t;
 	vector<State> next;
+	string temp;char temp_c[100];
+	int a=-5,b=-5,c=5,f=5;
+	/*ros::param::get("/hybrid_astar_node/carlx",a);
+	ros::param::get("/hybrid_astar_node/carly",b);
+	ros::param::get("/hybrid_astar_node/carrx",c);
+	ros::param::get("/hybrid_astar_node/carry",f);*/
+	BOT_W=1.9;
+	BOT_L=2.8;
 	
 	//alpha=steering angle, beta=turning angle, r=turning radius, d=distanced travelled
 	float alpha, beta, r, d = 1; 
-
+	/*cout<<BOT_W<<"\n\n\n\n\n\n\n"<<endl;
+	cout<<BOT_L<<"\n\n\n\n\n\n\n"<<endl;*/
 	for(alpha = -BOT_MAX_ALPHA; alpha <= BOT_MAX_ALPHA+0.01; alpha += BOT_MAX_ALPHA/2)
 	{
 		beta = abs(d*tan(alpha*M_PI/180)/BOT_L);

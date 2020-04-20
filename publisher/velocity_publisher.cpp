@@ -3,7 +3,7 @@
 #include "geometry_msgs/Twist.h"
 #include "geometry_msgs/PoseStamped.h" 
 #include "geometry_msgs/TransformStamped.h" 
-
+#include "sensor_msgs/Range.h"
 #include <iostream>
 #include "../include/State.hpp"
 
@@ -21,7 +21,8 @@ State curr, goal;
 bool dest_ch = false;
 int distThreshold = 5;
 tf2_ros::Buffer tfBuffer;
-
+bool is_left_safe = true;
+bool is_right_safe = true;
 // Used to locate the current position of vehicle
 void odomCallback(const nav_msgs::Odometry& odom_msg) 
 {
@@ -40,6 +41,24 @@ void odomCallback(const nav_msgs::Odometry& odom_msg)
     cout<<"Starting Received    : "<<curr.x<<" "<<curr.y<<" "<<curr.theta<<endl;
     cout<<"Destination Received : "<<goal.x<<" "<<goal.y<<" "<<goal.theta<<endl;
 
+}
+void left_sonar_call_back (sensor_msgs::Range l_dist)
+{
+    float left = l_dist.range;
+    cout<<"left  "<<left<<endl;
+    if(left<1.8)
+        is_left_safe = false;
+    else
+        is_left_safe = true;
+}
+void right_sonar_call_back (sensor_msgs::Range r_dist)
+{
+    float right = r_dist.range;
+    cout<<"right "<<right<<endl;
+    if(right<1.8)
+        is_right_safe = false;
+        else is_right_safe = true;
+    
 }
 
 void goalCallback(const geometry_msgs::PoseStamped&  target)
@@ -78,10 +97,11 @@ int main(int argc, char **argv)
 
     ros::Publisher pub = nh.advertise<geometry_msgs::Twist>("cmd_vel_frenet", 10);
     ros::Subscriber odom  = nh.subscribe("/base_pose_ground_truth",10,&odomCallback);
-    ros::Subscriber destination  = nh.subscribe("/move_base_simple/goal",10,&goalCallback);
-
+    ros::Subscriber destination  = nh.subscribe("/hybrid_astar_goal",10,&goalCallback);
+    ros::Subscriber lsub = nh.subscribe("/prius/front_sonar/left_far_range",1,left_sonar_call_back);
+    ros::Subscriber rsub= nh.subscribe("/prius/front_sonar/right_far_range",1,right_sonar_call_back);
     tf2_ros::TransformListener listener(tfBuffer);
-
+    int check;
     while(!dest_ch)
     {
         cout<<"Waiting for Goal "<<endl;
@@ -94,9 +114,15 @@ int main(int argc, char **argv)
         geometry_msgs::Twist vel;
         if( sqrt((curr.x-goal.x)*(curr.x-goal.x) + (curr.y-goal.y)*(curr.y-goal.y))< distThreshold)
             vel.linear.x = 0;
-        else 
-            vel.linear.x = 1;
-
+        else if(is_right_safe&&is_left_safe)
+            vel.linear.x = 1.5;
+        else if(is_right_safe == false && is_left_safe == false)
+            vel.linear.x=0;
+        else
+            vel.linear.x = 0.75;
+        nh.getParam("is_safe",check);
+        if(check==0)
+            vel.linear.x=0;
         pub.publish(vel);
         ros::spinOnce();
         rate.sleep();

@@ -11,6 +11,8 @@ This is `ros`-integrated package for Hybrid A* Path Planner.The underlying metho
   [car_demo](https://github.com/osrf/car_demo)<br/>
 - This is the official `ros` package for costmap_2d. The associated launch file that work with this gazebo simulation is part of the Hybrid A* package. <br/>
   [costmap_2d](https://github.com/strawlab/navigation/tree/master/costmap_2d)<br/>
+- Install ompl for ros from the below mentioned link  
+  [ompl](https://ompl.kavrakilab.org/installation.html) <br/>
 
 #### Building
 
@@ -20,7 +22,7 @@ This is `ros`-integrated package for Hybrid A* Path Planner.The underlying metho
 #### `ROS` topics
 
 - odometry topic - `/base_pose_ground_truth`
-- goal topic - `/move_base_simple/goal`  
+- goal topic - `/hybrid_astar_goal`  
 - costmap topic - `/costmap_node/costmap/costmap`
 - path topic - `/astroid path`
 
@@ -38,7 +40,7 @@ This is `ros`-integrated package for Hybrid A* Path Planner.The underlying metho
 `roslaunch car_demo demo.launch`
 
 **Launching costmap_2d package**<br/>
-`roslaunch costmap_2d gazebo.launch`
+`roslaunch hybrid_astar gazebo.launch`
 
 **Launching hybrid astar planner**<br/>
 `rosrun hybrid_astar hybridAstar_node`
@@ -47,7 +49,7 @@ This is `ros`-integrated package for Hybrid A* Path Planner.The underlying metho
 `rosrun hybrid_astar velocity_publisher`<br/>
 
 The previous three steps can done using `hybrid_astar.launch`<br/>
-Next publish the goal on `/move_base_simple/goal` using `2D Nav Goal` in `rviz` <br/>
+Next publish the goal on `/hybrid_astar_goal` using `2D Nav Goal` in `rviz` <br/>
 The path is published on `/astroid_path`. Select it on rviz to visualize the path published.<br/>
 
 **Launching tracking method**<br/>
@@ -55,6 +57,20 @@ The path is published on `/astroid_path`. Select it on rviz to visualize the pat
 
 **Launching controllers**<br/>
 `python catkin_ws/src/tracking_control/src/scripts/controllers/PID_velocity_controller.py`
+
+#### Some other parameters
+
+**Path replan only when path is disturbed**<br/>
+`Put the flag in ros_interface false to replan path everytime, otherwise path is planned only when an obstacle comes too near in the path`
+
+**Max_dist(parameter for voronoi field)**<br/>
+`This restricts the region where voronoi field has its effect(max dist from an obstacle). `
+
+**Use_voronoi
+`toggle to stop using voronoi field `
+
+**alpha**<br/> 
+`parameter of voronoi field (usually set high)`<br/>
 
 #### Images
 Gazebo Simulation<br/>
@@ -69,6 +85,14 @@ Rviz Simulation<br/>
 #### Video for Gazebo simulation
 
 [Video](https://www.youtube.com/watch?v=vPbcxREJunU)
+
+#### Gazebo simulation with waypoints
+
+To run our simulation as in the video given below, download the gazebo world file from https://drive.google.com/open?id=1uOzbxsuGYz6_36hEiQ5Fh5yBMukjkw87. <br/>
+Then configure car_demo to set your downloaded world file directory and spawn the prius model at (-19,14).<br/> 
+Waypoints are present in waypoints.txt file for a sample path, change them according to your path.<br/>
+To automatically publish waypoints from waypoints.txt file, run :- <br/>
+`rosrun hybrid_astar waypoint_node` <br/>
 
 #### Resources
 [Practical Search Techniques in Path Planning for Autonomous Driving](https://ai.stanford.edu/~ddolgov/papers/dolgov_gpp_stair08.pdf)

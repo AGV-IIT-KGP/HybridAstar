@@ -1,7 +1,7 @@
 <launch>
   <!-- Run the costmap node -->
   <node name="costmap_node" pkg="costmap_2d" type="costmap_2d_node" output="screen">
-	    <rosparam file="/home/shrey/catkin_ws/src/costmap_2d/launch/gazebo_params.yaml" command="load" ns="costmap" />  
+	    <rosparam file="/home/nikp/new_ws/src/hybrid_astar/launch/gazebo_params.yaml" command="load" ns="costmap" />  
   </node>
 
 </launch>

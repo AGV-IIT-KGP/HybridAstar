@@ -1,5 +1,5 @@
 #include "../include/Map.hpp"
-using namespace cv;
+//using namespace cv;
 
 Map::Map()
 {
@@ -115,5 +115,16 @@ bool Map::checkCollision(State pos)
      		if( obs[s][t]!=0 )
 				return true;
 		}
+	return false;
+}
+
+
+bool Map::check_min_obs_dis(State pos, Mat obs_dist_global,int dist_dubin_shot)
+{
+	
+	//cout<<pos.x<<" "<<pos.y<<endl;
+	int k= (int)obs_dist_global.at<uchar>((int)pos.x/0.5,(int)pos.y/0.5);
+	if(k<dist_dubin_shot)
+	return true;	
 	return false;
 }

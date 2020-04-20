@@ -34,6 +34,7 @@ class Map
 
         void initCollisionChecker();
         bool checkCollision(State pos);
+        bool check_min_obs_dis(State pos,Mat obs_dist_global, int dist_dubin_shot);
 
 };
 #endif
