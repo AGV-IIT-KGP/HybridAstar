@@ -25,7 +25,7 @@ class Heuristic
 		int dijkstra_grid_x;
 		int dijkstra_grid_y;
 
-		double get_heuristic(State pos);
+		double get_heuristic(State pos,Mat final);
 		float** d;
 
 		double DubinCost(State,State,double);

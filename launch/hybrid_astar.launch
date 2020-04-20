@@ -1,11 +1,34 @@
 <launch>
-
-    <node pkg="hybrid_astar" name="hybrid_astar" type="hybrid_astar"/>
-    <node pkg="hybrid_astar" name="hybrid_astar" type="conv"/>
-
-  <node pkg="turtlesim" name="mimic" type="mimic">
-    <remap from="input" to="turtlesim1/turtle1"/>
-    <remap from="output" to="turtlesim2/turtle1"/>
+  
+  <!-- This will launch the costmap_2d node with parameters configured according to gazebo -->
+  <node name="costmap_node" pkg="costmap_2d" type="costmap_2d_node" output="screen">
+	    <rosparam file="$(find hybrid_astar)/launch/gazebo_params.yaml" command="load" ns="costmap" />  
   </node>
+
+  <!-- This will launch the Hybrid A* Path Planner -->
+  <node pkg="hybrid_astar" type="hybridAstar_node" name="hybrid_astar_node" clear_params="true">
+
+   <!-- Placeholders for input remapping. Set your topic names as the "to" values  
+  		You wouldn't be needing this for gazebo directly 
+  	-->
+		
+	<!--
+      <remap from="/base_pose_ground_truth" to="odometry topic"/>
+      <remap from="/move_base_simple/goal" to="goal topic"/>
+      <remap from="/costmap_node/costmap/costmap" to="costmap topic"/>
+	-->     
+  </node>
+
+  <!-- This will launch the velocity publisher node for tracker and controller -->
+  <node pkg="hybrid_astar" type="velocity_publisher" name="velocity_publisher" clear_params="true">
+
+  <!-- If topics have to changed  -->
+  <!--
+      <remap from="/base_pose_ground_truth" to="odometry topic"/>
+      <remap from="/move_base_simple/goal" to="goal topic"/>
+  --> 
+
+  </node>
+
 
 </launch>

@@ -24,8 +24,8 @@ class Map
         int map_grid_x;
         int map_grid_y;
 
-        Map();
 
+        Map();
         Map(int** obs, int map_x, int map_y, float map_grid_resolution, State end, Vehicle car);
 
         bool isReached(State curr);
@@ -34,6 +34,7 @@ class Map
 
         void initCollisionChecker();
         bool checkCollision(State pos);
+        bool check_min_obs_dis(State pos,Mat obs_dist_global, int dist_dubin_shot);
 
 };
 #endif

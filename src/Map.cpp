@@ -1,5 +1,5 @@
 #include "../include/Map.hpp"
-using namespace cv;
+//using namespace cv;
 
 Map::Map()
 {
@@ -17,9 +17,10 @@ Map::Map(int** obs, int map_x, int map_y, float map_grid_resolution, State end, 
 
 	map_grid_x = toInt(map_x/map_grid_resolution);
 	map_grid_y = toInt(map_y/map_grid_resolution);
-	
+
 	initCollisionChecker();
 }
+
 
 double cmod(double a, double b)
 {
@@ -59,6 +60,7 @@ void Map::initCollisionChecker()
 	acc_obs_map=new int*[map_grid_x];
 	for(int i=0;i<map_grid_x;i++)
 	{
+
 		acc_obs_map[i]=new int[map_grid_y];
 		for(int j=0;j<map_grid_y;j++)
 			acc_obs_map[i][j]=(obs[i][j]>0);
@@ -103,6 +105,7 @@ bool Map::checkCollision(State pos)
 		return false;
 
 	// brute force check through the car
+
 	for(float i = -car.BOT_L/2; i<=car.BOT_L/2 + 0.001; i+=0.25)
 		for(float j=-car.BOT_W/2; j<=car.BOT_W/2 + 0.001; j+=0.25)
 		{
@@ -112,5 +115,16 @@ bool Map::checkCollision(State pos)
      		if( obs[s][t]!=0 )
 				return true;
 		}
+	return false;
+}
+
+
+bool Map::check_min_obs_dis(State pos, Mat obs_dist_global,int dist_dubin_shot)
+{
+	
+	//cout<<pos.x<<" "<<pos.y<<endl;
+	int k= (int)obs_dist_global.at<uchar>((int)pos.x/0.5,(int)pos.y/0.5);
+	if(k<dist_dubin_shot)
+	return true;	
 	return false;
 }

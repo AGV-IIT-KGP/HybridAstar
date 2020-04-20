@@ -12,9 +12,9 @@ class Vehicle{
 
 public:
 
-	float BOT_L=3;
+	float BOT_L=5;
 	float BOT_W=2;
-	float BOT_MAX_ALPHA=30;
+	float BOT_MAX_ALPHA=45;
 	double min_radius = abs(BOT_L/tan(BOT_MAX_ALPHA*M_PI/180));
 	vector<State> nextStates(State*);
 };

@@ -1,0 +1,39 @@
+global_frame: map
+robot_base_frame: base_link
+update_frequency: 5.0
+publish_frequency: 20.0
+always_send_full_costmap: true
+#set if you want the voxel map published
+publish_voxel_map: false
+
+#set to true if you want to initialize the costmap from a static map
+static_map: false
+
+rolling_window: true
+width: 100.0
+height: 100.0
+resolution: 0.5
+origin_x: -25
+origin_y: -25
+
+map_type: costmap
+
+transform_tolerance: 0.5
+obstacle_range: 100
+max_obstacle_height: 20.0
+raytrace_range: 100.0
+footprint: [[-5, -5], [-5, 5], [5, 5], [5, -5]]
+# robot_radius: 1
+footprint_padding: 0.1
+
+inflation_layer:
+    enabled:              true
+    inflation_radius:     1
+    cost_scaling_factor:  0.5
+
+lethal_cost_threshold: 1
+observation_sources: left_laser right_laser
+left_laser: {sensor_frame: front_left_laser_link, topic: /prius/front_left_laser/scan, data_type: LaserScan, expected_update_rate: 5,
+  observation_persistence: 10.0, marking: true, clearing: true, obstacle_range: 100, raytrace_range: 100, max_obstacle_height: 20, min_obstacle_height: 0}
+right_laser: {sensor_frame: front_right_laser_link, topic: /prius/front_right_laser/scan, data_type: LaserScan, expected_update_rate: 5,
+  observation_persistence: 10.0, marking: true, clearing: true, obstacle_range: 100, raytrace_range: 100, max_obstacle_height: 20, min_obstacle_height: 0}
